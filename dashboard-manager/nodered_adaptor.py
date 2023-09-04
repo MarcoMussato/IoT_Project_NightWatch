@@ -80,7 +80,7 @@ class noderedAdaptor():
         
         # Start a new container
         try:
-            cmd = ["docker", "run", "--name", f"{container_name}", "-p", "1880", "--network", "iot_17_08_my_network", "iot_17_08-node-red"]
+            cmd = ["docker", "run", "--name", f"{container_name}", "-p", "1880", "--network", "<main_folder_name>_my_network", "<main_folder_name>-sensor-simulation"]
             subprocess.run(cmd, check=True, capture_output=True)
         except subprocess.CalledProcessError as e:
             print(f"Error occurred: {e}")
