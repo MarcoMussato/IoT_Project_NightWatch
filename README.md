@@ -61,8 +61,8 @@ Follow these steps to set up and run the NightWatch platform:
 
 6. **Access Telegram Bots**:
    - Open Telegram and search for the two bots:
-     - NightWatch Doctors
-     - NightWatch Patients
+     - [NightWatch Doctors](@SleepApnea_bot)
+     - [NightWatch Patients](@SleepApnea_pat_bot)
 
 ## License
 
