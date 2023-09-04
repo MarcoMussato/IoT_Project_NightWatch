@@ -96,7 +96,7 @@ class sensor_adaptor():
         
         try:
            
-            docker_command = ["docker", "run", "--name", container_name, "--network", "iot_17_08_my_network", "iot_17_08-sensor-simulation"]
+            docker_command = ["docker", "run", "--name", container_name, "--network", "<main_folder_name>_my_network", "<main_folder_name>-sensor-simulation"]
             print(docker_command)
             subprocess.run(docker_command, check=True)
         
