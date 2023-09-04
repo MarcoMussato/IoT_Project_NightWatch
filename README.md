@@ -66,5 +66,5 @@ Follow these steps to set up and run the NightWatch platform:
 
 ## License
 
-This project is licensed under the GNU General Public License (GPL). See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License (GPL). See the [LICENSE](LICENSE.txt) file for details.
 
