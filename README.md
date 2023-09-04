@@ -63,3 +63,8 @@ Follow these steps to set up and run the NightWatch platform:
    - Open Telegram and search for the two bots:
      - NightWatch Doctors
      - NightWatch Patients
+
+## License
+
+This project is licensed under the GNU General Public License (GPL). See the [LICENSE](LICENSE) file for details.
+
