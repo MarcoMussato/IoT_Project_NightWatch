@@ -63,7 +63,3 @@ Follow these steps to set up and run the NightWatch platform:
    - Open Telegram and search for the two bots:
      - NightWatch Doctors
      - NightWatch Patients
-
-## License
-
-[License details]
