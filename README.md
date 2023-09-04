@@ -61,9 +61,8 @@ Follow these steps to set up and run the NightWatch platform:
 
 6. **Access Telegram Bots**:
    - Open Telegram and search for the two bots:
-     - [NightWatch Doctors](@SleepApnea_bot)
-     - [NightWatch Patients](@SleepApnea_pat_bot)
-
+     - [NightWatch Doctors](https://t.me/SleepApnea_bot)
+     - [NightWatch Patients](https://t.me/SleepApnea_pat_bot)
 ## License
 
 This project is licensed under the GNU General Public License (GPL). See the [LICENSE](LICENSE.txt) file for details.
