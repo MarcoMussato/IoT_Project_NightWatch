@@ -1,0 +1,5 @@
+telepot
+simplejson
+supervisor
+schedule
+paho-mqtt

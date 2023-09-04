@@ -1,0 +1,1377 @@
+[
+    {
+        "id": "efde2e7e10c753f0",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "2e29d9e5de9bae7b",
+        "type": "ui_dropdown",
+        "z": "efde2e7e10c753f0",
+        "name": "Dropdown patients selection",
+        "label": "Patient",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "8951f38b2f8f4313",
+        "order": 1,
+        "width": 11,
+        "height": 3,
+        "passthru": true,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "patientIDNode",
+        "topicType": "str",
+        "className": "",
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "f9b531955ff632b2"
+            ]
+        ]
+    },
+    {
+        "id": "df7934fc80a7619a",
+        "type": "ui_chart",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "group": "da39b95d953a968d",
+        "order": 2,
+        "width": 10,
+        "height": 5,
+        "label": "Number of episods",
+        "chartType": "horizontalBar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 930,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5083e991e66a540f",
+        "type": "http request",
+        "z": "efde2e7e10c753f0",
+        "name": "Patient data",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 310,
+        "y": 400,
+        "wires": [
+            [
+                "48b030c338cbc872"
+            ]
+        ]
+    },
+    {
+        "id": "f9b531955ff632b2",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "patient_ID",
+        "func": "var firstOutput = msg.payload;\nflow.set(\"first\", firstOutput);\n\nvar options = [{\"Today\":1},{\"Last week\":2},{\"Last month\":3}]\nmsg.options = options\n\nreturn msg",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 240,
+        "wires": [
+            [
+                "732b95ef15245bfd"
+            ]
+        ]
+    },
+    {
+        "id": "71da1f8c7fe97e3a",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "date_selection",
+        "func": "flow.set(\"choice\", msg.payload);",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "27a543fc3fafaf98",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "hr_values",
+        "func": "var data = msg.payloadData;\nvar ecg_data;\nvar timestamp_string, parsed_date, unix_timestamp;\nvar index = 0;\nvar choice = flow.get(\"choice\")\nvar series_val = [];\nvar data_val = [];  \n\nif (choice == 1){\n    series_val = [\"Heart Rate\"]; \n    data_val = [\n        []\n    ]; \n}\nelse{\n    series_val = [\"HR max\",\"HR avg\", \"HR min\"];\n    data_val = [\n        [], \n        [],\n        []\n    ]; \n}\n\nmsg.payload = [{\n    \"series\": series_val,\n    \"data\": data_val,\n    \"labels\": [\"Timestamp\", \"Heart Rate\"]\n}];\necg_data = data[\"ecg\"];\n\n// Loop over ECG data\nfor (let i = 0; i < ecg_data.length; i++) {\n    \n    let obj = ecg_data[i];\n    if (choice == 1){\n    // Add the Unix timestamp and value to the msg.payload\n    msg.payload[0][\"data\"][0][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"value\"] };\n    }\n    else{\n        // Add the Unix timestamp and value to the msg.payload\n        msg.payload[0][\"data\"][0][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"max value\"] };\n        msg.payload[0][\"data\"][1][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"avg value\"] };\n        msg.payload[0][\"data\"][2][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"min value\"] };\n    }\n    index = index + 1;\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 300,
+        "wires": [
+            [
+                "9a0386b15c6859c0"
+            ]
+        ]
+    },
+    {
+        "id": "be3d4b62866f0bbb",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "snorign_values",
+        "func": "var data = msg.payloadData;\nvar snoring_data;\nvar timestamp_string, parsed_date, unix_timestamp;\nvar index = 0;\nvar choice = flow.get(\"choice\")\nvar series_val = [];\nvar data_val = [];\n\nif (choice == 1) {\n    series_val = [\"Snoring values\"];\n    data_val = [\n        []\n    ];\n}\nelse {\n    series_val = [\"Snoring max\", \"Snoring avg\", \"Snoring min\"];\n    data_val = [\n        [],\n        [],\n        []\n    ];\n}\n\nmsg.payload = [{\n    \"series\": series_val,\n    \"data\": data_val,\n    \"labels\": [\"Timestamp\", \"Snoring\"]\n}];\nsnoring_data = data[\"snoring\"];\n\n// Loop over snoring data\nfor (let i = 0; i < snoring_data.length; i++) {\n\n    let obj = snoring_data[i];\n    if (choice == 1) {\n        // Add the Unix timestamp and value to the msg.payload\n        msg.payload[0][\"data\"][0][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"value\"] };\n    }\n    else {\n        // Add the Unix timestamp and value to the msg.payload\n        msg.payload[0][\"data\"][0][index] = { \"x\": obj[\"timestamp\"]*1000 , \"y\": obj[\"max value\"] };\n        msg.payload[0][\"data\"][1][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"avg value\"] };\n        msg.payload[0][\"data\"][2][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"min value\"] };\n    }\n    index = index + 1;\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 340,
+        "wires": [
+            [
+                "cc4801532e771de7"
+            ]
+        ]
+    },
+    {
+        "id": "a95eb7c9a66f9e9e",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "spo2_values",
+        "func": "var data = msg.payloadData;\nvar spo2_data;\nvar timestamp_string, parsed_date, unix_timestamp;\nvar index = 0;\nvar choice = flow.get(\"choice\")\nvar series_val = [];\nvar data_val = [];\n\nif (choice == 1) {\n    series_val = [\"Saturation\"];\n    data_val = [\n        []\n    ];\n}\nelse {\n    series_val = [\"SpO2 max\", \"SpO2 avg\", \"SpO2 min\"];\n    data_val = [\n        [],\n        [],\n        []\n    ];\n}\n\nmsg.payload = [{\n    \"series\": series_val,\n    \"data\": data_val,\n    \"labels\": [\"Timestamp\", \"Saturation\"]\n}];\nspo2_data = data[\"spo2\"];\n\n// Loop over saturation data\nfor (let i = 0; i < spo2_data.length; i++) {\n\n    let obj = spo2_data[i];\n    if (choice == 1) {\n        // Add the Unix timestamp and value to the msg.payload\n        msg.payload[0][\"data\"][0][index] = { \"x\": obj[\"timestamp\"]*1000 , \"y\": obj[\"value\"] };\n    }\n    else {\n        // Add the Unix timestamp and value to the msg.payload\n        msg.payload[0][\"data\"][0][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"max value\"] };\n        msg.payload[0][\"data\"][1][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"avg value\"] };\n        msg.payload[0][\"data\"][2][index] = { \"x\": obj[\"timestamp\"]*1000, \"y\": obj[\"min value\"] };\n    }\n    index = index + 1;\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 380,
+        "wires": [
+            [
+                "7e299a2d7a1885a9"
+            ]
+        ]
+    },
+    {
+        "id": "9a0386b15c6859c0",
+        "type": "ui_chart",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "group": "2af48b0c94b16d09",
+        "order": 1,
+        "width": 22,
+        "height": 11,
+        "label": "HR, [bpm]",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "step",
+        "nodata": "Heart Rate Data",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "1",
+        "removeOlderPoints": "500",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 880,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cc4801532e771de7",
+        "type": "ui_chart",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "group": "2af48b0c94b16d09",
+        "order": 3,
+        "width": 22,
+        "height": 11,
+        "label": "Snoring, [dB]",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "step",
+        "nodata": "Snoring Data",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "500",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 930,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7e299a2d7a1885a9",
+        "type": "ui_chart",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "group": "2af48b0c94b16d09",
+        "order": 2,
+        "width": 22,
+        "height": 11,
+        "label": "SpO2, [%]",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "step",
+        "nodata": "Saturation Data",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "500",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 910,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "275c6897b289eb4b",
+        "type": "ui_text_input",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "label": "E-mail",
+        "tooltip": "",
+        "group": "1be9b37cd96964a3",
+        "order": 2,
+        "width": 11,
+        "height": 2,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 90,
+        "y": 20,
+        "wires": [
+            [
+                "e70bad787af266f6"
+            ]
+        ]
+    },
+    {
+        "id": "7f4691283f3088c1",
+        "type": "ui_text_input",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "label": "Password",
+        "tooltip": "",
+        "group": "1be9b37cd96964a3",
+        "order": 7,
+        "width": 11,
+        "height": 2,
+        "passthru": true,
+        "mode": "password",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 100,
+        "y": 60,
+        "wires": [
+            [
+                "3e88687c6702a89a"
+            ]
+        ]
+    },
+    {
+        "id": "34aada4d74f73859",
+        "type": "http request",
+        "z": "efde2e7e10c753f0",
+        "name": "Check login",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "09563420573ee877"
+            ]
+        ]
+    },
+    {
+        "id": "e70bad787af266f6",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "Username",
+        "func": "var username = msg.payload;\nflow.set(\"username\", username);\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3e88687c6702a89a",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "Password",
+        "func": "var password = msg.payload;\nflow.set(\"password\", password);\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "353317e1663d292c",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "data adaptor url",
+        "func": "var username = flow.get(\"username\");\nvar password = flow.get(\"password\");\nvar base_url = msg.payload;\nmsg.url = `${base_url}/login?username=${username}&password=${password}`;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 120,
+        "y": 180,
+        "wires": [
+            [
+                "34aada4d74f73859"
+            ]
+        ]
+    },
+    {
+        "id": "7df7276548c63316",
+        "type": "ui_button",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "group": "1be9b37cd96964a3",
+        "order": 12,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "Submit",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "send",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 100,
+        "y": 120,
+        "wires": [
+            [
+                "9f9f28235b76e765"
+            ]
+        ]
+    },
+    {
+        "id": "732b95ef15245bfd",
+        "type": "ui_dropdown",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "label": "Date",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "8951f38b2f8f4313",
+        "order": 2,
+        "width": 11,
+        "height": 3,
+        "passthru": false,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "",
+        "topicType": "str",
+        "className": "",
+        "x": 90,
+        "y": 320,
+        "wires": [
+            [
+                "71da1f8c7fe97e3a",
+                "bd79e9ee6f3076e7"
+            ]
+        ]
+    },
+    {
+        "id": "790b7133b3c8c71f",
+        "type": "ui_toast",
+        "z": "efde2e7e10c753f0",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "Log-in info",
+        "x": 690,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "09563420573ee877",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "log in error",
+        "func": "var jsonFile = msg.payload;\n\nif (jsonFile.message === \"Username or password incorrect\") {\n    msg.highlight = \"red\"\n    msg.payload = jsonFile.message\n    return msg;\n} \nelse if (jsonFile.message === \"No patients found\") {\n    msg.topic = \"Welcom back Dr. \" + jsonFile.doc_name\n    msg.highlight = \"red\"\n    msg.payload = \"Error: \"+jsonFile.message\n    return msg;\n}\nelse {\n    // Save the JSON file in a variable\n    var jsonFile = msg.payload;\n\n    // Save the \"patients_list\" value in msg.options\n    msg.options = jsonFile.patient_list\n    msg.tet = jsonFile.doc_name; \n    // Save the \"doc_name\" value in msg.payload\n    msg.payload = \"Welcome back Dr. \"+ jsonFile.doc_name;\n    msg.highlight = \"green\"\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 180,
+        "wires": [
+            [
+                "790b7133b3c8c71f",
+                "2e29d9e5de9bae7b"
+            ]
+        ]
+    },
+    {
+        "id": "06b81be3905d08f4",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "url generator",
+        "func": "const json = JSON.parse(msg.payload);\nflow.set(\"catalog_url\", json.catalog_url);\nmsg.url = json.catalog_url + '/retrieve_endpoint?endpoint_type=adaptor_data';\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 120,
+        "wires": [
+            [
+                "af58a74afc5bdfa9"
+            ]
+        ]
+    },
+    {
+        "id": "af58a74afc5bdfa9",
+        "type": "http request",
+        "z": "efde2e7e10c753f0",
+        "name": "GET data adaptor",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 670,
+        "y": 120,
+        "wires": [
+            [
+                "353317e1663d292c"
+            ]
+        ]
+    },
+    {
+        "id": "9f9f28235b76e765",
+        "type": "file in",
+        "z": "efde2e7e10c753f0",
+        "name": "Upload config file",
+        "filename": "/app/config.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 290,
+        "y": 120,
+        "wires": [
+            [
+                "06b81be3905d08f4"
+            ]
+        ]
+    },
+    {
+        "id": "5a7ef870265f9e1d",
+        "type": "http request",
+        "z": "efde2e7e10c753f0",
+        "name": "GET data adaptor",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 470,
+        "y": 340,
+        "wires": [
+            [
+                "b507336c0a72c6ed"
+            ]
+        ]
+    },
+    {
+        "id": "bd79e9ee6f3076e7",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "url generator",
+        "func": "var catalog_url = flow.get(\"catalog_url\");\n\nmsg.url = catalog_url + '/retrieve_endpoint?endpoint_type=adaptor_data';\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 340,
+        "wires": [
+            [
+                "5a7ef870265f9e1d"
+            ]
+        ]
+    },
+    {
+        "id": "b507336c0a72c6ed",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "patient data url",
+        "func": "var base_url = msg.payload;\nvar payloadID = flow.get(\"first\"); \nvar payload_timeframe = flow.get(\"choice\")\n\nmsg.url = `${base_url}/get_sleep_data?patient_id=${payloadID}&timeframe=${payload_timeframe}`;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 120,
+        "y": 400,
+        "wires": [
+            [
+                "5083e991e66a540f"
+            ]
+        ]
+    },
+    {
+        "id": "48b030c338cbc872",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "Data warning",
+        "func": "if (msg.payload === \"No data found\") {\n    msg.highlight = \"yellow\"\n    msg.topic = \"Warning:\"\n    msg.payload = \"No data found for selected period\"\n    return msg;\n} else {\n    msg.highlight = \"Green\"\n    msg.topic = \"Info:\"\n    msg.payloadData = msg.payload\n    msg.payload = \"Scroll down to see the data and statistics\"\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 400,
+        "wires": [
+            [
+                "27a543fc3fafaf98",
+                "be3d4b62866f0bbb",
+                "a95eb7c9a66f9e9e",
+                "10e762da638885a3",
+                "2c634e1f52367750",
+                "9aa2b535da3a90d8",
+                "20596e5d857c39bd",
+                "94595e2adc534b01"
+            ]
+        ]
+    },
+    {
+        "id": "10e762da638885a3",
+        "type": "ui_toast",
+        "z": "efde2e7e10c753f0",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "Data info",
+        "x": 740,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "23c25eb13d763078",
+        "type": "ui_text",
+        "z": "efde2e7e10c753f0",
+        "group": "da39b95d953a968d",
+        "order": 13,
+        "width": 10,
+        "height": 1,
+        "name": "Day of max epi",
+        "label": "Date with max episodes",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "className": "",
+        "x": 940,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "2c634e1f52367750",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "n_episodes",
+        "func": "var dict = msg.payloadData\nmsg.payload = dict[\"n_episods\"]\nmsg.topic = \"\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 750,
+        "y": 420,
+        "wires": [
+            [
+                "df7934fc80a7619a"
+            ]
+        ]
+    },
+    {
+        "id": "20596e5d857c39bd",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "Day of max epi",
+        "func": "var dict = msg.payloadData\n\nif (dict[\"day_max_ep\"] === \"Today\"){\n    msg.payload = dict[\"day_max_ep\"]; \n}\nelse{\n// create a new Date object using a Unix timestamp (in seconds)\nvar unixTimestamp = dict[\"max_ep_day\"]; // replace this with your Unix timestamp\nvar date = new Date(unixTimestamp * 1000); // multiply by 1000 to convert to milliseconds\n// get the various components of the date\nvar year = date.getFullYear();\nvar month = date.getMonth() + 1; // add 1 because getMonth() returns 0-based index\nvar day = date.getDate();\n// format the date string\nvar formattedDate = year + '-' + month + '-' + day;\nmsg.payload = formattedDate\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 500,
+        "wires": [
+            [
+                "23c25eb13d763078"
+            ]
+        ]
+    },
+    {
+        "id": "94595e2adc534b01",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "Avg apnea time",
+        "func": "var dict = msg.payloadData\nmsg.payload = dict[\"avg_time_ep\"]\nmsg.topic = \"\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 540,
+        "wires": [
+            [
+                "8a2af541b3485f68"
+            ]
+        ]
+    },
+    {
+        "id": "9aa2b535da3a90d8",
+        "type": "function",
+        "z": "efde2e7e10c753f0",
+        "name": "max_n_episodes",
+        "func": "var dict = msg.payloadData\nmsg.payload = dict[\"max_episods\"]\nmsg.topic = \"\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 460,
+        "wires": [
+            [
+                "7d98ecf3aa83f5ca"
+            ]
+        ]
+    },
+    {
+        "id": "7d98ecf3aa83f5ca",
+        "type": "ui_chart",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "group": "da39b95d953a968d",
+        "order": 16,
+        "width": 10,
+        "height": 5,
+        "label": "Max number of episods",
+        "chartType": "horizontalBar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 990,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8a2af541b3485f68",
+        "type": "ui_chart",
+        "z": "efde2e7e10c753f0",
+        "name": "",
+        "group": "da39b95d953a968d",
+        "order": 27,
+        "width": 10,
+        "height": 5,
+        "label": "Average apnea time",
+        "chartType": "horizontalBar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 960,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "14a1e2973e61e7fd",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 1,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "a4174f3b97a1177c",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 3,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "7ac3dc6550205b00",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 4,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "51791f44e5e51046",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 5,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "84386597d3ce309b",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 6,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "5294a77c74b004ac",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 8,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "ee99b2962154dad5",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 9,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "385cbf8c70170211",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 10,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "a104ac34fef9a61d",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 11,
+        "width": 9,
+        "height": 1
+    },
+    {
+        "id": "f1ebbc1fab819e70",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "1be9b37cd96964a3",
+        "order": 13,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "42bbf6d21ea891df",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 1,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "4b40bb9ecc02a282",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 3,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "8b720a8034ec9193",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 4,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "d0da9c7a3242b593",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 5,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "b9355a173b77ebb1",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 6,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "8dcb7915801ea4b6",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 7,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "23773fd99c16e155",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 8,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "60f067bc560c4f4a",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 9,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "8c9b841040db8353",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 10,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "7ce64a0269d36ebb",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 11,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "e1ead3b6e0e81096",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 12,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "0bf9104a36c362ae",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 14,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "40c5dbb342ba35d4",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 15,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "0ae9e95f5c66f931",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 17,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "ecdc12fe72651576",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 18,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "b57835b3d94de044",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 19,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "b71ef8ce887988ab",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 20,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "c13e7a5cab443979",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 21,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "31d1f1530f8153ef",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 22,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "9f7ca5d4a0277029",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 23,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "4b9d7605b994e501",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 24,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "d588a1ec9485659b",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 25,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "d1a8402fe79944ac",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 26,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "d11960b255bb72ef",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 28,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "9c6c36087441e19f",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 29,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "ba2ec9f74ddaf109",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 30,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "cd6685f0d3d8682d",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 31,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "2d4d7b55e6854e68",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 32,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "35606bee85a166f4",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 33,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "90a1ba7a536af771",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 34,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "a2247a35b08d5b01",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 35,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "a80386c24f85a2d8",
+        "type": "ui_spacer",
+        "z": "efde2e7e10c753f0",
+        "name": "spacer",
+        "group": "da39b95d953a968d",
+        "order": 36,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "8951f38b2f8f4313",
+        "type": "ui_group",
+        "name": "Patient Picker",
+        "tab": "682d73dd3e24326c",
+        "order": 2,
+        "disp": true,
+        "width": 22,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "da39b95d953a968d",
+        "type": "ui_group",
+        "name": "Sleep stats",
+        "tab": "682d73dd3e24326c",
+        "order": 4,
+        "disp": true,
+        "width": 21,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2af48b0c94b16d09",
+        "type": "ui_group",
+        "name": "Sleep Graph",
+        "tab": "682d73dd3e24326c",
+        "order": 3,
+        "disp": true,
+        "width": 22,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1be9b37cd96964a3",
+        "type": "ui_group",
+        "name": "Login ",
+        "tab": "682d73dd3e24326c",
+        "order": 1,
+        "disp": true,
+        "width": 22,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "682d73dd3e24326c",
+        "type": "ui_tab",
+        "name": "Doctor dashboard",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

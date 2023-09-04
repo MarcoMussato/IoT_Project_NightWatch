@@ -1,0 +1,88 @@
+{
+    "host": "catalog",
+    "port": 8080,
+
+    "adaptor_data": {
+        "mongo_url":"mongodb+srv://gruppo31:progetto_IoT2023@cluster0.sn4svvy.mongodb.net/?retryWrites=true&w=majority",
+        "database_data":"Data",
+        "host": "mongodb",
+        "port": 8081
+    },
+
+    "adaptor_endpoints": {
+        "mongo_url":"mongodb+srv://gruppo31:progetto_IoT2023@cluster0.sn4svvy.mongodb.net/?retryWrites=true&w=majority",
+        "database_endpoints":"Endpoints",
+        "collection_endpoints":"Endpoints",
+        "host": "mongodb",
+        "port": 8082
+    },
+
+    "alert":{
+        "base_topic": "doctor_iot_nightwatch",
+        "alert_topic": "apnea_alert",
+        "broker": "test.mosquitto.org",
+        "port": 1883,
+        "clientID": "Alert_Sleep_Apnea_Nightwatch"
+    },
+    
+    "user_registration_form":{
+        "host": "0.0.0.0",
+        "port": 8083
+    },
+
+    "dashboard_adaptor":{
+        "host": "dashboard-manager",
+        "port": 8084,
+        "nodered_host": "0.0.0.0"
+    },
+
+    "sensor_adaptor":{
+        "host": "sensor-manager",
+        "port": 8085,
+        "image_name": "sensor-simulation"
+    },
+
+    "sensor_docker":{
+        
+        "base_topic": "sensor/apnea",
+        "topic_hr":"/HR",
+        "topic_spo2":"/spo2",
+        "topic_snor":"/snor",
+
+
+        "clientID": "SensorGenerator_NightWatch",
+        "broker": "test.mosquitto.org",
+        "port": 1883   
+    },
+
+    "data_process":{
+    },
+
+    "data_storage":{
+        "base_topic": "sensor/apnea",
+        "broker": "test.mosquitto.org",
+        "port": 1883,
+        "clientID": "data_storage_sleep_apnea"
+    },
+
+    "telegram_bot_doc": {
+        "telegram_token_doc": "5831284969:AAFFEP1qy05KxewEJv4ff-4Tgbmm_yduego",
+        "broker": "test.mosquitto.org",
+        "port": 1883,
+        "clientID": "Telegram_Bot_Doc_NightWatch", 
+        "base_topic": "doctor_iot_nightwatch/apnea_alert"
+    
+    },
+
+    "telegram_bot_pat": {
+        "telegram_token_pat": "5913291295:AAHxx3fiviGCg_87J3h2lYn2VD794vptMBI"
+    },
+
+    "report_generator" : {
+        "host": "data-processing-statistics",
+        "port": 8086
+    }
+
+
+}
+

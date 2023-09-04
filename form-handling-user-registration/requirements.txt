@@ -1,0 +1,4 @@
+cherrypy
+simplejson
+jinja2
+requests

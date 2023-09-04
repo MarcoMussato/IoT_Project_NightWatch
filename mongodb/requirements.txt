@@ -1,0 +1,5 @@
+cherrypy
+simplejson
+pymongo
+supervisor
+pytz

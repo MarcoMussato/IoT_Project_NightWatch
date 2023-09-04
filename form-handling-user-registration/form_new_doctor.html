@@ -1,0 +1,109 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css">
+  <style>
+    /* Add some style to the form */
+    form {
+      margin: 20px auto;
+      width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      padding: 20px;
+    }
+
+    /* Style the labels and inputs */
+    label {
+      display: block;
+      margin-bottom: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px 20px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    input[type="password"], select {
+      width: 100%;
+      padding: 12px 20px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 10px;
+    }
+
+    input[type="date"]{
+        width: 100%;
+      padding: 12px 20px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+
+    /* Style the submit button */
+    input[type="submit"] {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 20px ;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    /* Style the form container */
+    .form-container {
+      width: 500px;
+      margin: 0 auto;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+    }
+  </style>
+</head>
+
+
+
+
+<body>
+    <article class="form-container">
+        <h1>New Doctor Registration Form</h1>
+      <form action="/registration" method="POST">
+        <label for="chatID">Chat ID:</label>
+        <input type="text" id="chat_id" name="chat_id" required>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required>
+        <label for="username">E-mail:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+        <input type="submit" value="Submit">
+      </form>
+    </article>
+  </body>
+  

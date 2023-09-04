@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  mongodb:
+    build: ./mongodb
+    ports:
+      - "27017:27017"
+      - "8081:8081"
+    depends_on:
+      - catalog
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=davide_mac
+      - MONGO_INITDB_ROOT_PASSWORD=mongo99
+    networks:
+      - my_network
+
+  dashboard-manager:
+    build: ./dashboard-manager
+    depends_on:
+      - mongodb
+      - catalog
+    networks:
+      - my_network
+    ports: 
+      - "8084:8084"
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  sensor-simulation:
+    build: ./sensor-simulation
+    depends_on:
+      - mongodb
+      - catalog
+    networks:
+      - my_network
+  
+  sensor-manager:
+    build: ./sensor-manager
+    depends_on:
+      - catalog
+      - mongodb
+    networks:
+      - my_network
+    ports:
+      - "8085:8085"
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  data-processing-statistics:
+    build: ./data-processing-statistics
+    depends_on:
+      - mongodb
+      - catalog
+    volumes:
+      - my_volume:/app/data
+    ports:
+      - "8086:8086"
+    networks:
+      - my_network
+
+  form-handling-user-registration:
+    build: ./form-handling-user-registration
+    depends_on:
+      - catalog
+      - mongodb
+    ports:
+      - "8083:8083"
+    networks:
+      - my_network
+
+  catalog:
+    build: ./catalog
+    networks:
+      - my_network
+
+  telegram-bots:
+    build: ./telegram-bots
+    depends_on:
+      - mongodb
+      - catalog
+    volumes:
+      - my_volume:/app/data
+    networks:
+      - my_network
+
+  node-red:
+    build: ./node-red
+    container_name: node-red-dashboard
+    networks:
+      - my_network
+    depends_on:
+      - catalog 
+      - mongodb
+      - dashboard-manager
+    volumes:
+      - node-red-data:/data
+
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  my_volume:
+  node-red-data:

@@ -1,0 +1,9 @@
+numpy
+simplejson
+paho-mqtt
+matplotlib
+weasyprint
+cherrypy
+pymongo
+stats
+pytz

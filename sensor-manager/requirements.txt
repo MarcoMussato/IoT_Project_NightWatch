@@ -1,0 +1,5 @@
+cherrypy
+simplejson
+paho-mqtt
+requests
+docker

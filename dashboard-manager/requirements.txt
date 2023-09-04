@@ -1,0 +1,3 @@
+cherrypy
+simplejson
+requests
