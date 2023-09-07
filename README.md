@@ -26,7 +26,7 @@ Follow these steps to set up and run the NightWatch platform:
 2. **Download the Repository**: 
    - Clone or download the NightWatch repository and save it in a directory on your computer.
 
-3. **Configure Node-RED Adaptor**:
+3. **Configure Dashboard Adaptor**:
    - Navigate to the folder `dashboard-manager`.
    - Open the file `nodered_adaptor.py`.
    - Go to line 83 and modify it as follows:
