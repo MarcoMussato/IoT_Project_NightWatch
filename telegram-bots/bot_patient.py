@@ -164,8 +164,6 @@ class SleepApneaBot:
             self.bot.answerCallbackQuery(query_id, text=f'{query_data.split("_")[-1]} selected')
 
         elif query_data == 'submit':
-            # If the patient clicked on submit
-
             # Get DB data adaptor url
             adaptor_data_url = self.http_requests.retrieve_url(endpoint_type="adaptor_data")
             
@@ -258,42 +256,6 @@ class SleepApneaBot:
     def cancel(self):
         self.bot.sendMessage(self.chat_id, text='Operation cancelled')
     
-    def set_reminder(self): 
-        # code for setting up the reminder goes here
-
-        # Create inline keyboard buttons for each hour of the day, in increments of 30 minutes
-        time_options = []
-        for hour in range(6,15):
-            hour_row = []
-            for minute in range(0,60,15):
-                button_label = f"{hour:02d}:{minute:02d}"
-                callback_data = f"time_{hour}_{minute}"
-                #callback_data = "time_12_00"
-                button = InlineKeyboardButton(text=button_label, callback_data=callback_data)
-                hour_row.append(button)
-            time_options.append(hour_row)
-        time_keyboard = InlineKeyboardMarkup(inline_keyboard=time_options)
-        
-        # Send message with inline keyboard
-        self.bot.sendMessage(self.chat_id, text='Please select a time:', reply_markup=time_keyboard)
-    
-    def send_reminder(self):
-        fill_diary_button = InlineKeyboardButton(text='Fill Sleep Diary', callback_data='filldiary')
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[[fill_diary_button]])
-        self.bot.sendMessage(self.chat_id, text='This is your daily reminder to fill the sleep diary', reply_markup=keyboard)
-    
-    def set_reminder_schedule(self):
-        #schedule.every().day.at(self.reminder_time).do(self.send_reminder(), self.bot, self.chat_id)
-        schedule.every().day.at(self.reminder_time).do(self.send_reminder)
-
-        while True:
-            schedule.run_pending()
-            time.sleep(60)
-    
-    def view_sleep_diary(self):
-        self.bot.sendMessage(self.chat_id, text="Previous sleep diary: ")
-        # code for retrieving previous sleep diary goes here
-    
     def fill_sleep_diary(self):
         """
         This function allows the user to fill out a new sleep diary.
@@ -303,7 +265,7 @@ class SleepApneaBot:
         self.user_responses['chat_id'] = str(self.chat_id)
         
         self.bot.sendMessage(self.chat_id, text="Please fill out the sleep diary")
-        # code for filling out a new sleep diary goes here
+        
         # Create inline keyboard buttons for the rating scale
         sleep_quality_buttons = [
             [InlineKeyboardButton(text='Poorly', callback_data='sleep_quality_poor')],
