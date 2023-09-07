@@ -43,13 +43,10 @@
     },
 
     "sensor_docker":{
-        
         "base_topic": "sensor/apnea",
         "topic_hr":"/HR",
         "topic_spo2":"/spo2",
         "topic_snor":"/snor",
-
-
         "clientID": "SensorGenerator_NightWatch",
         "broker": "test.mosquitto.org",
         "port": 1883   
