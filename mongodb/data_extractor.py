@@ -1,6 +1,7 @@
-
-
 class dataExtractor(): 
+    """
+    this class is used to extract data from the database and to format it in a way that is compatible with NODE-RED
+    """ 
     def __init__(self,catalog_data,catalog_stat): 
         self.collection_data = catalog_data
         self.collection_stat = catalog_stat
