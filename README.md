@@ -48,16 +48,32 @@ Follow these steps to set up and run the NightWatch platform:
 
      Again, replace `<main_folder_name>` with the name of the main directory where you saved the repository.
 
-5. **Run Docker Compose**:
+5. **Setup and Start Docker Containers**:
+
    - Open the Docker application.
+
    - Open a terminal or command prompt in the main directory of NightWatch (where the `docker-compose.yml` file resides).
-   - Run the following command to start the Docker containers:
+
+   - First, build all the Docker images using the following command:
 
      ```bash
-     docker-compose up
+     docker-compose build
      ```
 
-     This will initialize and run all the services.
+   - After building, start all the containers (excluding the ones for sensor simulation and node-red) using:
+
+     ```bash
+     docker-compose up --detach --scale sensor-simulation=0 --scale node-red=0
+     ```
+
+     If you want to see the logs in the terminal, remove the `--detach` flag:
+
+     ```bash
+     docker-compose up --scale sensor-simulation=0 --scale node-red=0
+     ```
+
+     The `--detach` flag runs the containers in the background. If you prefer to view the logs directly in the terminal, simply omit this flag. This will initialize and run all the necessary services.
+
 
 6. **Access Telegram Bots**:
    - Open Telegram and search for the two bots:
