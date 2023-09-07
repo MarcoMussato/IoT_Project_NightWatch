@@ -131,9 +131,9 @@ class Processing():
             mean_apnea_duration=a.mean_apnea_duration(apnea_episodes)
 
             # Set the timezone to Houston
-            houston_timezone = pytz.timezone('US/Central')
+            local_timezone = pytz.timezone('UTC')
             # Get the current date and time
-            now = datetime.now(houston_timezone)
+            now = datetime.now(local_timezone)
             # create a new datetime object with the same date but at 00:00:00 time
             midnight_datetime = now.replace(hour=0, minute=0, second=0, microsecond=0)
             # convert midnight datetime to Unix timestamp and add one day
