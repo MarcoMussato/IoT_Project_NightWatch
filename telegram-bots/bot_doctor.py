@@ -245,7 +245,8 @@ class SleepApneaBotDoc:
                 keyboard = InlineKeyboardMarkup(inline_keyboard=button)
                 self.bot.sendMessage(self.chat_id, text=start_message, reply_markup=keyboard)  
                
-            else: #Dr. present in the DB, api_response.text returns the name
+            else: 
+                # Dr. present in the DB, api_response.text returns the name
                 last_name = response.text 
                 self.bot.sendMessage(self.chat_id, text=f'Welcome to the Sleep Apnea Bot, Dr. {last_name}!👋👋\n')
                 
@@ -308,8 +309,8 @@ class SleepApneaBotDoc:
             
         # Make a GET request to the catalog with the adaptor data as a query parameter
         adaptor_data_url = self.http_requests.retrieve_url(endpoint_type="adaptor_data")
+        
         # Delete the doctor from the DB
-    
         api_response = self.http_requests.GET(adaptor_data_url,"delete_account", {"type":"doc", "chat_id": self.chat_id})
 
         if api_response.status_code == 200:
