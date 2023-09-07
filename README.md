@@ -21,7 +21,22 @@ NightWatch is a platform that offers an integrated solution for monitoring sleep
 Follow these steps to set up and run the NightWatch platform:
 
 1. **Install Docker**: 
-   - Ensure that Docker is installed on your computer. If not, download and install it from the [Docker official site](https://www.docker.com/).
+   
+   - **Check if Docker is Installed**:
+     Open a terminal or command prompt and run the following command:
+     ```bash
+     docker --version
+     ```
+
+     If Docker is installed, this will return its version. If not, you'll typically see a message like "command not found" or similar.
+
+   - If Docker isn't installed or isn't accessible from the command line, download and install it from the [Docker official site](https://www.docker.com/).
+
+   - **(Optional) Check Docker Compose**:
+     While you're at it, it might be useful to also ensure `docker-compose` is installed. You can verify this with:
+     ```bash
+     docker-compose --version
+     ```
 
 2. **Download the Repository**: 
    - Clone or download the NightWatch repository and save it in a directory on your computer.
