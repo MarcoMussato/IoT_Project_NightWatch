@@ -604,7 +604,7 @@ class MongoAPI_data(object):
         :param params: A dictionary containing the chat_id of the patient or doctor and the type of account.
         :return: A success message.
         """
-        #delete the patient or the doctor account from the database
+        # Delete the patient or the doctor account from the database
         if params["type"] == "pat":
             patients_collection = self.db["Patients"]
             patients_collection.find_one_and_delete({"chat_id": params["chat_id"]})
