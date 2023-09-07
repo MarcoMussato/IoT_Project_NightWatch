@@ -65,7 +65,7 @@ Follow these steps to set up and run the NightWatch platform:
 
 5. **Setup and Start Docker Containers**:
 
-   - Open the Docker application.
+   - Launch the Docker application.
 
    - Open a terminal or command prompt in the main directory of NightWatch (where the `docker-compose.yml` file resides).
 
