@@ -117,7 +117,6 @@ class report_generator:
 
         # Loop through the sleep diary data and extract the relevant information
         for document in sleep_diary_data:
-            #hours_of_sleep.append(document["hours_of_sleep"])
             quality.append(document["quality"])
             rested.append(document["rested"])
             meal.append(document["meal"])
