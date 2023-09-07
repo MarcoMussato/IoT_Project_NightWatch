@@ -443,14 +443,3 @@ if __name__ == '__main__':
             print("Report generator service updated: restarted CherryPy server with new host and port!")
         else:
             print("Report generator service updated: host and port did not change")
-        
-    
-
-
-"""
-To generate a report for a specific chat ID, 
-send an HTTP GET request to http://localhost:8080/get_report with the chat_id parameter:
-http://localhost:8080/get_report?chat_id=1234
-The service will return the file path to the generated PDF report, 
-which you can then download or view. 
-"""
