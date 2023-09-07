@@ -92,7 +92,6 @@ class sensor_adaptor():
         if post_response.status_code != 200: 
             print("Sensor process creation failed")
             raise Exception("Failed to create the service on the database.")
-        #print(f"\n{post_response.json()['message']}\n") 
         
         try:
            
