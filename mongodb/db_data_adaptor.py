@@ -645,7 +645,7 @@ class MongoAPI_data(object):
         # Iterate through the cursor
         for doc in documents:
             # Check if the document meets the criteria
-            if int(doc['total apnea episodes']) > 40 and str(doc['_id']) not in self.processed_documents: #se commento seconda parte if funzona
+            if int(doc['total apnea episodes']) > 40 and str(doc['_id']) not in self.processed_documents:
                 
                 patient_doc = self.db["Patients"].find_one({'_id': ObjectId(doc['patient_id'])})
                 # Extract and structure the patient info
