@@ -123,21 +123,20 @@ class MyPublisher:
 
         :return: None
         """
-        #GET adaptor_url
+        # GET adaptor_url
         adaptor_data_url = self.http_requests.retrieve_url(endpoint_type="adaptor_data")
 
-        #GET list of sensors
-        # mi basta chiedere al data adaptor l'info del pazient che mi interessa, cercandolo in base al chat id, che sarà lo stesso del sensore
+        # GET list of sensors
         action = "patient_info"
         sensor_info = self.http_requests.GET(adaptor_data_url, action = action, params = {"id" :self.sensor_id})
         
-        #if the request is ok the patient_id is saved in the variable
+        # If the request is ok the patient_id is saved in the variable
         if sensor_info.status_code != 200:
             raise Exception(f"Failed to retrieve sensor info from the catalog.")
         sensor_element = sensor_info.json()
-        # print(sensor_element)
+        
 
-        #Set the timezone to UTC
+        # Set the timezone to UTC
         local_timezone = pytz.timezone('UTC')
         # Get the current date and time
         now = datetime.now(local_timezone).replace(tzinfo=None)
@@ -145,13 +144,13 @@ class MyPublisher:
         start_time = datetime.strptime(sensor_element["fall_asleep_time"], "%H:%M")
         end_time = datetime.strptime(sensor_element["wake_up_time"], "%H:%M")
         
-        # create datetime objects for start and end times on the current date
+        # Create datetime objects for start and end times on the current date
         start_datetime = datetime.combine(now.date(), start_time.time()).replace(tzinfo=None)
         end_datetime = datetime.combine(now.date(), end_time.time()).replace(tzinfo=None)
-        # adjust end time if it's before start time
+        # Adjust end time if it's before start time
         if end_datetime < start_datetime:
             end_datetime = end_datetime + timedelta(days=1)
-        # check if current time is between start and end times
+        # Check if current time is between start and end times
         if start_datetime < now < end_datetime:        
             rg=sensor_generator() #calling the class for generating sensors values
             topic = "/".join([self.baseTopic,self.sensor_id])
@@ -190,10 +189,10 @@ class MyPublisher:
         """  
         
         
-        #GET sensor info
+        # GET sensor info
         sensor_info = self.http_requests.GET(self.catalog_url, action = "get_process", params = {"process_id": "", "collection" : "Sensors Processes", "option":"docker"})
        
-        #if the request is ok the patient_id is saved in the variable
+        # If the request is ok the patient_id is saved in the variable
         if sensor_info.status_code != 200:
             raise Exception(f"Failed to retrieve sensor info from the catalog.")
         self.sensor_id = sensor_info.json()["process_id"]
